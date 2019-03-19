@@ -1,3 +1,11 @@
+/*
+ * Code for Lobster Calendar, an interface to Google Calendar.
+ * Written by Aidan Low.
+ */
+
+
+/* UTILITIES */
+
 // Append code to HTML tag with given ID
 function appendAtId(id, innerHtml) {
   document.getElementById(id).innerHTML += innerHtml;
@@ -25,6 +33,9 @@ function setTrackedObjectValue(i, key, value) {
   });
 }
 
+
+/* FUNCTIONS */
+
 // Seed tasks
 function seedPreferences() {
   saveItemToSync('trackedObjects', [
@@ -42,17 +53,6 @@ function seedPreferences() {
   saveItemToSync('colorMeanings', {
 
   })
-}
-
-// Render a list of all events at the bottom of the window
-function renderAllEvents() {
-  clearAtId('primaryCalendarEvents')
-  chrome.storage.local.get(['events'], function(result) {
-    var events = result['events'];
-    for (var i = 0; i < events.length; i ++) {
-      appendAtId('primaryCalendarEvents', '<div class="col-12">' + events[i]["summary"] + '</div>');
-    }
-  });
 }
 
 // Render a list of all tracked tasks
@@ -88,7 +88,51 @@ function renderCalendarList() {
   })
 }
 
-// Main
+// Pull the calendarList
+function pullCalendarList() {
+  var url = new URL(api_url + '/users/me/calendarList');
+  fetch(url, queryParams)
+  .then((response) => response.json()) // Transform the data into json
+  .then(function(data) {
+    console.log(data);
+    var calendarList = data["items"];
+    saveItemToSync('calendarList', calendarList);
+    console.log(primaryCalendar);
+  })
+}
+
+// Render a list of all events at the bottom of the window
+function renderAllEvents() {
+  clearAtId('primaryCalendarEvents')
+  chrome.storage.local.get(['events'], function(result) {
+    var events = result['events'];
+    for (var i = 0; i < events.length; i ++) {
+      appendAtId('primaryCalendarEvents', '<div class="col-12">' + events[i]["summary"] + '</div>');
+    }
+  });
+}
+
+function pullAllEvents() {
+  var url = new URL(api_url + '/calendars/' + primaryCalendar['id'] + '/events'),
+      params = {
+        singleEvents: true,
+        orderby: "startTime",
+        maxResults: 2500,
+        timeMax: new Date().toISOString()
+      }
+  Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
+  fetch(url, queryParams)
+  .then((response) => response.json()) // Transform the data into json
+  .then(function(data) {
+    console.log(data);
+    var events = data["items"]
+    saveItemToSync("events", events);
+  })
+}
+
+
+/* MAIN */
+
 chrome.identity.getAuthToken({ 'interactive': true }, function(token) {
   console.log('token', token);
 
@@ -106,38 +150,13 @@ chrome.identity.getAuthToken({ 'interactive': true }, function(token) {
 
   // Render calendarList
   renderCalendarList();
-
   // Render saved events
   renderAllEvents();
 
-  // Get the primary calendar
-  var url = new URL(api_url + '/users/me/calendarList');
-  fetch(url, queryParams)
-  .then((response) => response.json()) // Transform the data into json
-  .then(function(data) {
-    console.log(data);
-    var calendarList = data["items"];
-    saveItemToSync('calendarList', calendarList);
-    console.log(primaryCalendar);
-  })
+  // Refresh calendarList
+  pullCalendarList();
   renderCalendarList();
-
-
-  // Get all events from primaryCalendar
-  var url = new URL(api_url + '/calendars/' + primaryCalendar['id'] + '/events'),
-      params = {
-        singleEvents: true,
-        orderby: "startTime",
-        maxResults: 2500,
-        timeMax: new Date().toISOString()
-      }
-  Object.keys(params).forEach(key => url.searchParams.append(key, params[key]))
-  fetch(url, queryParams)
-  .then((response) => response.json()) // Transform the data into json
-  .then(function(data) {
-    console.log(data);
-    var events = data["items"]
-    saveItemToSync("events", events);
-  })
+  // Refresh events
+  pullAllEvents();
   renderAllEvents();
 })

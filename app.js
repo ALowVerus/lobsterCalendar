@@ -50,8 +50,28 @@ function seedPreferences() {
       "endDatetime": new Date("10 March 2019").toISOString()
     }
   ]);
-  saveItemToSync('colorMeanings', {
-
+  saveItemToSync('eventTypesList', [
+    "Sleep", "School", "Downtime", "Comp/Exams", "Dating/Partner",
+    "Social time", "Exercise", "Productive Time",
+    "Gaming", "Family Time", "Travel", "Prep", "Waste Time",
+    "Health", "Paid work"
+  ])
+  saveItemToSync('eventTypesDict', {
+    "Sleep":                    {"color": "", "associatedEvents": [], "amount": 0},
+    "School":                   {"color": "", "associatedEvents": [], "amount": 0},
+    "Downtime":                 {"color": "", "associatedEvents": [], "amount": 0},
+    "Comp/Exams":               {"color": "", "associatedEvents": [], "amount": 0},
+    "Dating/Partner":           {"color": "", "associatedEvents": [], "amount": 0},
+    "Social time": {"color": "", "associatedEvents": [], "amount": 0},
+    "Exercise":                 {"color": "", "associatedEvents": [], "amount": 0},
+    "Productive Time":          {"color": "", "associatedEvents": [], "amount": 0},
+    "Gaming":                   {"color": "", "associatedEvents": [], "amount": 0},
+    "Family Time":              {"color": "", "associatedEvents": [], "amount": 0},
+    "Travel":                   {"color": "", "associatedEvents": [], "amount": 0},
+    "Prep":                     {"color": "", "associatedEvents": [], "amount": 0},
+    "Waste Time":               {"color": "", "associatedEvents": [], "amount": 0},
+    "Health":                   {"color": "", "associatedEvents": [], "amount": 0},
+    "Paid work":                {"color": "", "associatedEvents": [], "amount": 0}
   })
 }
 
@@ -89,7 +109,7 @@ function renderCalendarList() {
 }
 
 // Pull the calendarList
-function pullCalendarList() {
+function pullCalendarList(api_url, queryParams) {
   var url = new URL(api_url + '/users/me/calendarList');
   fetch(url, queryParams)
   .then((response) => response.json()) // Transform the data into json
@@ -99,6 +119,24 @@ function pullCalendarList() {
     saveItemToSync('calendarList', calendarList);
     console.log(primaryCalendar);
   })
+}
+
+function renderEventTypes() {
+  clearAtId('eventTypes')
+  chrome.storage.local.get(['eventTypesList'], function(result) {
+    var eventTypesList = result['eventTypesList'];
+    chrome.storage.local.get(['eventTypesDict'], function(result) {
+      var eventTypesDict = result['eventTypesDict'];
+      appendAtId('eventTypes', '<div class="col-12"><h4>Event Types:</h4></div>');
+      appendAtId('eventTypes', '<ul class="list-group">');
+      for (var i = 0; i < eventTypesList.length; i ++) {
+        var eventTypeName = eventTypesList[i];
+        var eventType = eventTypesDict[eventTypeName];
+        appendAtId('eventTypes', '<li class="list-group-item">' + eventTypeName + '</li>');
+      }
+      appendAtId('eventTypes', '</ul>');
+    });
+  });
 }
 
 // Render a list of all events at the bottom of the window
@@ -112,7 +150,7 @@ function renderAllEvents() {
   });
 }
 
-function pullAllEvents() {
+function pullAllEvents(api_url, queryParams) {
   var url = new URL(api_url + '/calendars/' + primaryCalendar['id'] + '/events'),
       params = {
         singleEvents: true,
@@ -145,18 +183,20 @@ chrome.identity.getAuthToken({ 'interactive': true }, function(token) {
   const api_url = 'https://www.googleapis.com/calendar/v3'
 
   // Seed and render objects
-  // seedTrackedObjects();
+  seedPreferences();
   renderTrackedObjects();
 
   // Render calendarList
   renderCalendarList();
-  // Render saved events
-  renderAllEvents();
+  // // Render saved events
+  // renderAllEvents();
+  // Render event types
+  renderEventTypes();
 
   // Refresh calendarList
-  pullCalendarList();
+  pullCalendarList(api_url, queryParams);
   renderCalendarList();
-  // Refresh events
-  pullAllEvents();
-  renderAllEvents();
+  // // Refresh events
+  // pullAllEvents(api_url, queryParams);
+  // renderAllEvents();
 })

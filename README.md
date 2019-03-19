@@ -1,4 +1,4 @@
-# petersonCalendar
+# Lobster Calendar
 A life planning Chrome Extension for aspiring lobsters.
 
 Built as a Google Chrome Extension, this app interfaces with Google Calendar to allow users to easily plan out their life goals and see their progress towards their goals from within the Google Calendar interface.

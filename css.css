@@ -7,6 +7,8 @@ body {
   padding: 0;
   width: 500px;
 }
+body {
+}
 h1 {
   font-family: 'Menlo', monospace;
   font-size: 22px;

@@ -3,6 +3,9 @@ A life planning Chrome Extension for aspiring lobsters.
 
 Built as a Google Chrome Extension, this app interfaces with Google Calendar to allow users to easily plan out their life goals and see their progress towards their goals from within the Google Calendar interface.
 
+Eventually, the app will have the same functionality as this Google Sheet:
+<https://docs.google.com/spreadsheets/d/1u5jai7LVdzpqB-Rp6Ia44sGtLJ2a31-xC_6iwjhHbwQ/edit#gid=0>
+
 The app can be manually uploaded to a user's Chrome Extension page by:
 - downloading the package,
 - unzipping it,

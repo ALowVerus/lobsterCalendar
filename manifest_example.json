@@ -6,19 +6,20 @@
   "icons": {"128": "icon_128.png" },
   "browser_action": {
     "default_icon": "icon.png",
-    "default_popup": "popup.html"
+    "default_popup": "app.html"
   },
   "permissions": [
     "identity",
     "storage",
-    "https://www.googleapis.com/"],
+    "https://www.googleapis.com/"
+  ],
   /* "background": {
      "scripts": [
-       "popup.js"
+       "app.js"
      ]
    }, */
   "oauth2": {
-    "client_id": "XXXXXXXX",
+    "client_id": "XXXXXXXX.apps.googleusercontent.com",
     "scopes": [
       "https://www.googleapis.com/auth/calendar"
     ]

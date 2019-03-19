@@ -16,9 +16,10 @@ Since the app is not yet approved by the Chrome Store, using it will require set
 - clicking "Credentials" in the left sidebar,
 - clicking "Create credentials" and selecting "OAuth client ID",
 - selecting "Chrome App",
+- inputting the Chrome Extension ID as your Store ID when prompted,
 - following other prompts until returned to the "Credentials" page,
-- copying the newly-created OAuth client ID,
-- pasting it into "manifest_example.json" in your downloaded copy of the app, and
+- copying the newly-created OAuth2 client ID,
+- pasting it into the XXXXXXXX area of "manifest_example.json" in your downloaded copy of the app, and
 - renaming "manifest_example.json" to "manifest.json".
 
 Once this is all done, you should be able to see your Google Calendars' names and some of your primary calendar's events appear when you open the extension from the top right of your screen.

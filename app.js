@@ -26,7 +26,7 @@ function setTrackedObjectValue(i, key, value) {
 }
 
 // Seed tasks
-function seedTrackedObjects() {
+function seedPreferences() {
   saveItemToSync('trackedObjects', [
     {
       "title": "Test 1",
@@ -39,6 +39,9 @@ function seedTrackedObjects() {
       "endDatetime": new Date("10 March 2019").toISOString()
     }
   ]);
+  saveItemToSync('colorMeanings', {
+
+  })
 }
 
 // Render a list of all events at the bottom of the window
